@@ -11,6 +11,7 @@ grep in rust (WIP)
      - [ ] Read content of the file directed by 'FILEPATH'.
      - [ ] Perform grep on the content.
      - [ ] Output matched lines.
+- [ ] Add support to Linux (Currently supports Windows only).
 
 
 
