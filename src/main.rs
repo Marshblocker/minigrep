@@ -4,7 +4,9 @@ use std::io::{BufReader};
 use std::io::prelude::*;
 use std::fs::File;
 
-use minigrep::err::{MyError::*, ErrMsg};
+mod err;
+
+use err::{MyError::*, ErrMsg};
 
 
 fn main() {
