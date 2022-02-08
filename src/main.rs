@@ -1,6 +1,6 @@
 use std::env;
 use std::path::{Path, PathBuf};
-use std::io::BufReader;
+use std::io::{BufReader};
 use std::io::prelude::*;
 use std::fs::File;
 
@@ -15,7 +15,7 @@ fn main() {
             eprintln!("{}", errmsg);
             1
         }
-    })
+    });
 }
 
 fn app() -> Result<(), ErrMsg> {
@@ -44,7 +44,6 @@ fn validate_args<'a>(args: &'a Vec<String>, ) -> Result<(PathBuf, &'a String), E
     };
 
     let path: &Path = Path::new(args[1].as_str());
-    dbg!(&path);
     let path: PathBuf = if !path.exists() {
         return Err(InvalidPathErr.to_str())
     } else {
@@ -69,7 +68,7 @@ fn grep_file(path: PathBuf, pattern: &String) -> Result<(), ErrMsg> {
 
     let file = BufReader::new(file);
 
-    println!("\nFinding '{}' in {:?}...\n", pattern, path);
+    println!("\nFinding '{}' in {}...\n", pattern, path.to_str().unwrap());
 
     let mut c: u32 = 0;
     for (i, line) in file.lines().enumerate() {
