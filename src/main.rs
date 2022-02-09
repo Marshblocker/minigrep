@@ -10,7 +10,7 @@ use err::{ErrMsg, MyError::*};
 
 fn main() {
     std::process::exit(match app() {
-        Ok(_) => 0,
+        Ok(_)       => 0,
         Err(errmsg) => {
             eprintln!("{}", errmsg);
             1
@@ -23,7 +23,7 @@ fn app() -> Result<(), ErrMsg> {
 
     let (path, pattern): (PathBuf, &String) = match validate_args(&console_args) {
         Ok((path, pattern)) => (path, pattern),
-        Err(errmsg) => return Err(errmsg),
+        Err(errmsg)         => return Err(errmsg),
     };
     
     if let Err(errmsg) = grep_file(path, pattern) {
@@ -35,10 +35,10 @@ fn app() -> Result<(), ErrMsg> {
 
 fn validate_args<'a>(args: &'a Vec<String>) -> Result<(PathBuf, &'a String), ErrMsg> {
     match args.len() {
-        3 => (),
+        3     => (),
         0..=2 => return Err(FewArgsErr.to_str()),
-        4.. => return Err(ManyArgsErr.to_str()),
-        _ => panic!("Not allowed to go here!"),
+        4..   => return Err(ManyArgsErr.to_str()),
+        _     => panic!("Not allowed to go here!"),
     };
 
     let path: &Path = Path::new(args[1].as_str());
@@ -60,7 +60,7 @@ fn validate_args<'a>(args: &'a Vec<String>) -> Result<(PathBuf, &'a String), Err
 fn grep_file(path: PathBuf, pattern: &String) -> Result<(), ErrMsg> {
     let file: File = match File::open(path.as_path()) {
         Ok(file) => file,
-        Err(_) => return Err(IOErr.to_str()),
+        Err(_)   => return Err(IOErr.to_str()),
     };
 
     let file = BufReader::new(file);
@@ -71,7 +71,7 @@ fn grep_file(path: PathBuf, pattern: &String) -> Result<(), ErrMsg> {
     for (i, line) in file.lines().enumerate() {
         let line: String = match line {
             Ok(line) => line,
-            Err(_) => return Err(ReadErr.to_str()),
+            Err(_)   => return Err(ReadErr.to_str()),
         };
 
         let line_len = line.len();
@@ -91,8 +91,8 @@ fn grep_file(path: PathBuf, pattern: &String) -> Result<(), ErrMsg> {
     }
 
     match matched_count {
-        0 => println!("\nNo lines that match the pattern '{}'.", pattern),
-        1 => println!("\nFound 1 line that matches the pattern '{}'.", pattern),
+        0   => println!("\nNo lines that match the pattern '{}'.", pattern),
+        1   => println!("\nFound 1 line that matches the pattern '{}'.", pattern),
         2.. => println!("\nFound {} lines that match the pattern '{}'.", matched_count, pattern),
     }
 

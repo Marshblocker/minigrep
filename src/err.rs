@@ -24,11 +24,9 @@ impl MyError {
             NonAsciiPatternErr => "The given PATTERN has non-ASCII values.\n",
             IOErr              => "Failed to open the given file.\n",
             ReadErr            => "Error occurred while reading the given file.\n"
-        }; 
+        };
         err += "Usage: cargo run FILEPATH PATTERN\n";
 
         err
     }
 }
-
-
