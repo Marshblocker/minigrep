@@ -76,17 +76,17 @@ fn grep_file(path: PathBuf, pattern: &String) -> Result<(), ErrMsg> {
 
         let line_len = line.len();
         let ptn_len = pattern.len();
-        let mut matched_pattern_indices: Vec<usize> = Vec::new();
+        let mut matched_substring_indices: Vec<usize> = Vec::new();
 
         for i in 0..=line_len-ptn_len {
             if &line[i..i+ptn_len].to_string() == pattern {
-                matched_pattern_indices.push(i);
+                matched_substring_indices.push(i);
             }
         }
 
-        if matched_pattern_indices.len() > 0 {
+        if matched_substring_indices.len() > 0 {
             matched_count += 1;
-            println!("Line {}: {} [{:?}]", i, line, matched_pattern_indices);
+            println!("Line {}: {} {:?}", i, line, matched_substring_indices);
         }
     }
 
