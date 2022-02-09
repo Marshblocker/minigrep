@@ -7,7 +7,7 @@ pub enum MyError {
     InvalidPathErr,
     NonAsciiPatternErr,
     IOErr,
-    ReadErr,
+    LongPatternErr,
 }
 
 impl MyError {
@@ -22,8 +22,8 @@ impl MyError {
                                    Make sure the FILEPATH or PATTERN has no whitespace within them.\n",
             InvalidPathErr     => "The given FILEPATH does not exist or cannot be accessed due to permission reasons.\n",
             NonAsciiPatternErr => "The given PATTERN has non-ASCII values.\n",
-            IOErr              => "Failed to open the given file.\n",
-            ReadErr            => "Error occurred while reading the given file.\n"
+            IOErr              => "Failed to access the given file.\n",
+            LongPatternErr     => "The given PATTERN exceeds the standard length of a file line.\n"
         };
         err += "Usage: cargo run FILEPATH PATTERN\n";
 
