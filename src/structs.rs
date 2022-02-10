@@ -1,10 +1,8 @@
 use std::fs;
-use std::path::{Path, PathBuf};
-
-// use err::{MyError::*, *};
 
 use crate::err::{MyError::*, *};
 
+#[derive(Debug, PartialEq)]
 pub struct Config {
     pub path: String,
     pub pattern: String,
@@ -30,18 +28,14 @@ impl Config {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Reader {
     pub file_content: String,
 }
 
 impl Reader {
     pub fn new(path: &String) -> Result<Reader, ErrMsg> {
-        let file_path: PathBuf = match Self::get_file_path(path) {
-            Ok(file_path) => file_path,
-            Err(errmsg) => return Err(errmsg),
-        };
-
-        let file_content: String = match Self::get_file_content(&file_path) {
+        let file_content: String = match Self::get_file_content(&path) {
             Ok(content) => content,
             Err(errmsg) => return Err(errmsg),
         };
@@ -49,24 +43,8 @@ impl Reader {
         Ok(Reader { file_content })
     }
 
-    // Get the absolute path of the target file.
-    fn get_file_path(path: &String) -> Result<PathBuf, ErrMsg> {
-        let file_path = Path::new(path.as_str());
-        let file_path: PathBuf = match file_path.canonicalize() {
-            Ok(abs_path) => abs_path,
-            Err(_) => return Err(InvalidPathErr.to_str()),
-        };
-        
-        if !file_path.exists() {
-            return Err(InvalidPathErr.to_str());
-        }
-
-        Ok(file_path)
-    }
-
-    // Read the content of the target file and store as a string.
-    fn get_file_content(file_path: &PathBuf) -> Result<String, ErrMsg> {
-        let file_content = match fs::read_to_string(file_path.as_path()) {
+    fn get_file_content(path: &String) -> Result<String, ErrMsg> {
+        let file_content = match fs::read_to_string(path) {
             Ok(content) => content,
             Err(_errmsg) => {
                 return Err(IOErr.to_str());
@@ -134,5 +112,35 @@ impl Grepper {
                 matched_count, self.pattern
             ),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn config_test() {
+        let args = vec![String::from("/path/to/executable")];
+        assert_eq!(Err(MyError::FewArgsErr.to_str()), Config::new(&args));
+
+        let args = vec![
+            String::from("/path/to/executable"),
+            String::from("this"),
+            String::from("has"),
+            String::from("too"),
+            String::from("many args"),
+        ];
+        assert_eq!(Err(MyError::ManyArgsErr.to_str()), Config::new(&args),);
+
+        let args = vec![
+            String::from("/path/to/executable"),
+            String::from("/path/to/target/file"),
+            String::from("ӫⲀӍ骜k_ψ񢁧賴O򾢈p葽*㜗ѭ)͖􊀻̺ېާT𘎤~٢򭱨V⥩ގQ"),
+        ];
+        assert_eq!(
+            Err(MyError::NonAsciiPatternErr.to_str()),
+            Config::new(&args),
+        );
     }
 }
